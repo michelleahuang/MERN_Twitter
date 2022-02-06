@@ -10,7 +10,7 @@ router.get("/test", (req, res) => res.json({ msg: "This is the tweets route" }))
 
 router.get('/', (req, res) => {
     Tweet.find()
-        .sort({ date: -1 })
+        .sort({ date: -1 }) // sorting date by reverse order (newest tweets come first)
         .then(tweets => res.json(tweets))
         .catch(err => res.status(404).json({ notweetsfound: 'No tweets found' }));
 });
@@ -18,22 +18,17 @@ router.get('/', (req, res) => {
 router.get('/user/:user_id', (req, res) => {
     Tweet.find({user: req.params.user_id})
         .then(tweets => res.json(tweets))
-        .catch(err =>
-            res.status(404).json({ notweetsfound: 'No tweets found from that user' }
-        )
-    );
+        .catch(err => res.status(404).json({ notweetsfound: 'No tweets found from that user' }));
 });
 
 router.get('/:id', (req, res) => {
     Tweet.findById(req.params.id)
         .then(tweet => res.json(tweet))
-        .catch(err =>
-            res.status(404).json({ notweetfound: 'No tweet found with that ID' })
-        );
+        .catch(err => res.status(404).json({ notweetfound: 'No tweet found with that ID' }));
 });
 
 router.post('/',
-    passport.authenticate('jwt', { session: false }),
+    passport.authenticate('jwt', { session: false }), // request object will have a user key on it which will be the current user based on the json web token
     (req, res) => {
         const { errors, isValid } = validateTweetInput(req.body);
 
